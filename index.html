@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Compare disease case records across Indian Union Territories and reporting periods.">
+  <title>UT Disease Analysis Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar navigation is written in HTML; JavaScript only changes the active page. -->
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#home" aria-label="Home">
+        <span class="brand-mark">+</span>
+        <span><strong>UT HealthScope</strong><small>DISEASE ANALYTICS</small></span>
+      </a>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="nav-list" aria-label="Main navigation">
+        <a class="nav-link" data-page="home" href="#home"><span class="nav-icon">⌂</span>Home</a>
+        <a class="nav-link" data-page="filters" href="#filters"><span class="nav-icon">☷</span>Dashboard Filters</a>
+        <a class="nav-link" data-page="overview" href="#overview"><span class="nav-icon">▦</span>Dashboard Overview</a>
+        <a class="nav-link" data-page="top-diseases" href="#top-diseases"><span class="nav-icon">✚</span>Top 5 Diseases</a>
+        <a class="nav-link" data-page="cases-by-disease" href="#cases-by-disease"><span class="nav-icon">◉</span>Cases by Disease</a>
+        <a class="nav-link" data-page="trends" href="#trends"><span class="nav-icon">↗</span>Disease Trends &amp; Growth</a>
+        <a class="nav-link" data-page="data-table" href="#data-table"><span class="nav-icon">▤</span>Data Table</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        <span>Dashboard workspace</span>
+        <small id="api-status">Checking API…</small>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="menu-button" id="menu-toggle" type="button" aria-label="Toggle navigation">☰</button>
+        <div>
+          <div class="eyebrow">PUBLIC HEALTH DATA</div>
+          <div class="topbar-title" id="page-title">Home</div>
+        </div>
+        <div class="topbar-right">
+          <span class="live-dot"></span><span>Disease analysis</span><span class="avatar">UT</span>
+        </div>
+      </header>
+
+      <div class="notice hidden" id="notice" role="status"></div>
+
+      <!-- HOME PAGE -->
+      <section class="page" id="page-home">
+        <div class="hero">
+          <div class="hero-content">
+            <div class="kicker">Union Territory · Disease · Data</div>
+            <h1>Understand disease patterns. Compare what changed.</h1>
+            <p>Explore recorded disease cases across Union Territories using a five-year view or a two-year comparison.</p>
+            <div class="hero-actions">
+              <a class="btn btn-light" href="#filters">Start analysis &nbsp; →</a>
+              <a class="btn btn-hero-outline" href="#overview">Open dashboard</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <article class="card feature-card">
+            <div class="feature-icon">▦</div><h3>5-Year &amp; 2-Year Analysis</h3>
+            <p>Switch between all five years together and a custom two-year comparison.</p>
+          </article>
+          <article class="card feature-card">
+            <div class="feature-icon">✚</div><h3>Top 5 diseases</h3>
+            <p>View a graph comparing the five highest-count disease categories in each reporting period.</p>
+          </article>
+          <article class="card feature-card">
+            <div class="feature-icon">⇩</div><h3>Data and reports</h3>
+            <p>Inspect the comparison table and export the filtered results as CSV or PDF.</p>
+          </article>
+        </div>
+
+        <div class="section-head home-workflow-head">
+          <div><div class="kicker">Quick start</div><h2 class="home-workflow-title">Your analysis workflow</h2><p>Set filters first. The charts update only after Submit.</p></div>
+          <a class="btn btn-primary" href="#filters">Open Dashboard Filters →</a>
+        </div>
+      </section>
+
+      <!-- FILTERS PAGE -->
+      <section class="page hidden" id="page-filters">
+        <div class="section-head">
+          <div><div class="kicker">Configure analysis</div><h1>Dashboard Filters</h1><p>Choose an analysis mode and filters. 5-Year Analysis uses 2021–2025 together; 2-Year Comparison lets you choose any two years (2021–2030). Results apply only when you press Submit.</p></div>
+          <span class="tag">Step 1 of analysis</span>
+        </div>
+        <div class="card filter-card">
+          <form id="filter-form">
+            <div class="form-grid">
+              <div class="field">
+                <label for="unionTerritory">Union Territory</label>
+                <select id="unionTerritory" name="unionTerritory"><option value="All">All Union Territories</option></select>
+                <span class="field-help">Choose one territory or include all available territories.</span>
+              </div>
+              <div class="field">
+                <label for="disease">Disease</label>
+                <select id="disease" name="disease"><option value="All">All Diseases</option></select>
+                <span class="field-help">Choose a single disease or compare all diseases.</span>
+              </div>
+              <div class="field">
+                <label for="ownershipCategory">Ownership Category</label>
+                <select id="ownershipCategory" name="ownershipCategory">
+                  <option value="All">All</option>
+                  <option value="Public">Public</option>
+                  <option value="Private">Private</option>
+                </select>
+                <span class="field-help">Filter cases by Public or Private sector.</span>
+              </div>
+              <div class="field">
+                <label for="areaCategory">Area Category</label>
+                <select id="areaCategory" name="areaCategory">
+                  <option value="All">All</option>
+                  <option value="Urban">Urban</option>
+                  <option value="Rural">Rural</option>
+                </select>
+                <span class="field-help">Filter cases by Urban or Rural area.</span>
+              </div>
+              <div class="field">
+                <label for="analysisMode">Analysis Mode</label>
+                <select id="analysisMode" name="analysisMode">
+                  <option value="five-year">5-Year Analysis (2021–2025)</option>
+                  <option value="two-year">2-Year Comparison</option>
+                </select>
+                <span class="field-help">Choose one analysis type. Both modes work independently.</span>
+              </div>
+              <div class="field year-comparison-field hidden" id="old-year-field">
+                <label for="oldPeriod">Old Year Data</label>
+                <select id="oldPeriod" name="oldPeriod" required></select>
+                <span class="field-help">Select a year from 2021 to 2030. Availability is checked when you submit.</span>
+              </div>
+              <div class="field year-comparison-field hidden" id="new-year-field">
+                <label for="newPeriod">New Year Data</label>
+                <select id="newPeriod" name="newPeriod" required></select>
+                <span class="field-help">Select a year from 2021 to 2030. Selecting a year does not mean data exists.</span>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" type="submit">✓ &nbsp; Submit &amp; View Dashboard</button>
+              <button class="btn btn-outline" id="reset-filters" type="button">↺ &nbsp; Reset</button>
+              <div class="filter-feedback" id="filter-feedback" role="status" aria-live="polite"></div>
+            </div>
+          </form>
+          <div class="filter-note"><span>ⓘ</span><div><strong>How it works:</strong> 5-Year Analysis uses 2021–2025. 2-Year Comparison uses your selected years (2021–2030). Ownership and Area filters work independently. Selecting a specific value in both filters together is not supported because the source does not contain cross-tabulated counts. Changing fields does not refresh results; press Submit to apply filters.</div></div>
+        </div>
+        <div class="card report-intro home-report-intro">
+          <h3 class="card-title">Currently applied comparison</h3><p id="applied-filter-summary">All Union Territories · All Diseases · Ownership: All · Area: All · Select years</p>
+        </div>
+      </section>
+
+      <!-- DASHBOARD OVERVIEW PAGE -->
+      <section class="page hidden" id="page-overview">
+        <div class="section-head">
+          <div><div class="kicker" id="overview-kicker">Dashboard</div><h1>Dashboard Overview</h1><p id="overview-description">Apply filters to load your comparison.</p></div>
+          <a class="btn btn-outline" href="#filters">Edit filters</a>
+        </div>
+        <div class="card empty-state" id="overview-empty">No comparison loaded yet. <a class="btn btn-primary" href="#filters">Open filters</a></div>
+        <div class="overview-content hidden" id="overview-content">
+          <div class="stats-grid">
+            <article class="card stat-card"><div class="stat-top"><span id="old-total-title">Old Period Cases</span><span class="stat-icon">◷</span></div><div class="stat-value" id="old-total">0</div><div class="stat-sub" id="old-period-label">Selected old year</div></article>
+            <article class="card stat-card"><div class="stat-top"><span id="new-total-title">New Period Cases</span><span class="stat-icon">▦</span></div><div class="stat-value" id="new-total">0</div><div class="stat-sub" id="new-period-label">Selected new year</div></article>
+            <article class="card stat-card"><div class="stat-top"><span>Overall Change</span><span class="stat-icon" id="change-icon">↗</span></div><div class="stat-value" id="growth-percent">N/A</div><div class="stat-sub" id="case-difference">0 net case difference</div></article>
+            <article class="card stat-card"><div class="stat-top"><span>Highest Disease</span><span class="stat-icon">✚</span></div><div class="stat-value" id="highest-disease">N/A</div><div class="stat-sub">Highest case count in the new period</div></article>
+          </div>
+          <div class="card chart-card full-chart">
+            <div class="chart-head"><div><h3>Disease Cases by Year</h3><p>Compare recorded disease cases across the selected analysis years.</p></div><div class="legend"><span><i class="swatch old-swatch"></i><span id="overview-old-legend">Old year</span></span><span><i class="swatch new-swatch"></i><span id="overview-new-legend">New year</span></span></div></div>
+            <div class="chart-wrap"><canvas id="overview-chart" aria-label="Disease Cases by Year" role="img"></canvas></div>
+          </div>
+          <div class="card report-intro"><h3 class="card-title">Reading this dashboard</h3><p>These are recorded case counts, not population-adjusted disease rates. A higher count does not automatically mean a higher individual risk. <span id="disease-category-count">0</span> disease categories are present under the applied filters.</p><span class="tag" id="overview-period-tag">Selected years</span></div>
+        </div>
+      </section>
+
+      <!-- TOP 5 DISEASES PAGE -->
+      <section class="page hidden" id="page-top-diseases">
+        <div class="section-head"><div><div class="kicker">Disease rankings</div><h1>Top 5 Diseases</h1><p id="top-diseases-description">Submit dashboard filters to view period-wise rankings.</p></div></div>
+        <div class="top-diseases-content hidden" id="top-diseases-content">
+          <div class="card chart-card full-chart"><div class="chart-head"><div><h3>Top 5 Disease Comparison</h3><p>Top five disease counts are displayed for every year in the selected mode.</p></div><div class="legend"><span><i class="swatch old-swatch"></i><span id="top-old-legend">Old year</span></span><span><i class="swatch new-swatch"></i><span id="top-new-legend">New year</span></span></div></div><div class="chart-wrap"><canvas id="top-five-chart" aria-label="Top 5 Disease Comparison" role="img"></canvas></div></div>
+          <div class="filter-note"><span>ⓘ</span><div>Each period contributes its own top five. If the top-five lists differ, the graph includes the union of both lists so no ranked disease is hidden.</div></div>
+        </div>
+      </section>
+
+      <!-- CASES BY DISEASE PAGE -->
+      <section class="page hidden" id="page-cases-by-disease">
+        <div class="section-head"><div><div class="kicker">Disease distribution</div><h1>Cases by Disease</h1><p id="cases-description">Submit dashboard filters to view the distribution.</p></div></div>
+        <div class="cases-content hidden" id="cases-content">
+          <div class="card chart-card full-chart"><div class="chart-head"><div><h3>Disease Case Distribution</h3><p id="cases-chart-description">Share of recorded cases by disease for the selected year or comparison.</p></div></div><div class="chart-wrap"><canvas id="disease-distribution-chart" aria-label="Disease Case Distribution" role="img"></canvas></div></div>
+        </div>
+      </section>
+
+      <!-- DISEASE TRENDS PAGE -->
+      <section class="page hidden" id="page-trends">
+        <div class="section-head"><div><div class="kicker">Change over time</div><h1>Disease Trends &amp; Growth</h1><p id="trends-description">Submit dashboard filters to calculate changes.</p></div></div>
+        <div class="trends-content hidden" id="trends-content">
+          <div class="card chart-card full-chart"><div class="chart-head"><div><h3>Disease Trend</h3><p>Total recorded cases across the selected reporting years.</p></div></div><div class="chart-wrap"><canvas id="trend-chart" aria-label="Disease Trend" role="img"></canvas></div></div>
+          <div class="trend-summary">
+            <article class="card insight-card"><div class="kicker">Overall change</div><div class="insight-value" id="trend-growth-value">N/A</div><p id="trend-growth-description"></p></article>
+            <article class="card insight-card"><div class="kicker">Highest disease in new period</div><div class="insight-value insight-value-large" id="trend-highest-disease">N/A</div><p>Highest recorded case count under the current filters.</p></article>
+          </div>
+          <div class="filter-note"><span>ⓘ</span><div>The chart shows annual recorded case counts for the selected analysis mode.</div></div>
+        </div>
+      </section>
+
+      <!-- DATA TABLE AND EXPORT PAGE -->
+      <section class="page hidden" id="page-data-table">
+        <div class="section-head"><div><div class="kicker">Records</div><h1>Data Table</h1><p id="table-description">Submit filters to view data.</p></div><div class="report-actions no-print hidden" id="table-export-actions"><button class="btn btn-outline" id="table-csv" type="button">Export CSV ↓</button><button class="btn btn-primary" id="table-pdf" type="button">Export to PDF ↓</button></div></div>
+        <div class="data-table-content hidden" id="data-table-content">
+          <div class="card table-card">
+            <div class="table-toolbar"><div><h3 class="card-title">Disease comparison records</h3><p id="table-summary"></p></div><span class="tag">Aggregated by disease</span></div>
+            <div class="table-scroll"><table><thead><tr><th>Disease</th><th id="old-table-heading">Old year cases</th><th id="new-table-heading">New year cases</th><th>Difference</th><th>Change %</th></tr></thead><tbody id="comparison-table-body"><tr><td colspan="5" class="empty-state">No matching records.</td></tr></tbody></table></div>
+          </div>
+          <div class="card report-intro table-report-intro"><h3 class="card-title">Report notes</h3><p>Export CSV or download a PDF report for the filtered comparison. If old-period cases are zero, percentage change is shown as N/A to avoid division by zero.</p></div>
+        </div>
+      </section>
+
+      <nav class="page-navigation no-print" aria-label="Page navigation">
+        <button class="btn btn-outline" id="go-home" type="button">⌂ &nbsp; Home</button>
+        <div class="page-navigation-right">
+          <button class="btn btn-outline" id="go-previous" type="button">← Previous</button>
+          <span class="page-counter" id="page-counter">Page 1 of 7</span>
+          <button class="btn btn-primary" id="go-next" type="button">Next →</button>
+        </div>
+      </nav>
+      <footer class="footer">Union Territory Disease Analysis Dashboard <span>•</span> Academic project</footer>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
